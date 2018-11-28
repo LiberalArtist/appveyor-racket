@@ -1,0 +1,75 @@
+environment:
+  PKG_NAME: appveyor-racket # replace with your package name
+  CYGPATH: cygpath -u # used by download-racket.sh
+  matrix:
+  # Supply at least one RACKET_VERSION environment variable. This is
+  # used by the download-racket.sh script (run at install,
+  # below) to select the version of Racket to download and install.
+  #
+  # Supply more than one RACKET_VERSION (as in the example below) to
+  # create a build matrix to test against multiple Racket versions.
+  #
+  # The RELEASE snapshot is only available during the release process.
+    - RACKET_VERSION: HEAD # the latest nightly snapshot
+    - RACKET_VERSION: HEADCS # like HEAD, but Racket-on-Chez
+    - RACKET_VERSION: RELEASE # release candidate (during the release process)
+    - RACKET_VERSION: 7.1
+    - RACKET_VERSION: 7.0
+    - RACKET_VERSION: 6.12
+    - RACKET_VERSION: 6.11
+    - RACKET_VERSION: 6.10
+    - RACKET_VERSION: 6.9
+    - RACKET_VERSION: 6.8
+    - RACKET_VERSION: 6.7
+    - RACKET_VERSION: 6.6
+    - RACKET_VERSION: 6.5
+    - RACKET_VERSION: 6.4
+    - RACKET_VERSION: 6.3
+    - RACKET_VERSION: 6.2
+    - RACKET_VERSION: 6.1.1
+    - RACKET_VERSION: 6.1
+    - RACKET_VERSION: 6.0.1
+    - RACKET_VERSION: 6.0
+    - RACKET_VERSION: 5.93
+    - RACKET_VERSION: 5.92
+    - RACKET_VERSION: 5.3.6
+    - RACKET_VERSION: 5.3.5
+    - RACKET_VERSION: 5.3.4
+    - RACKET_VERSION: 5.3.3
+    - RACKET_VERSION: 5.3.2
+    - RACKET_VERSION: 5.3.1
+    - RACKET_VERSION: 5.3
+    - RACKET_VERSION: 5.2.1
+    - RACKET_VERSION: 5.2
+    - RACKET_VERSION: 5.1.3
+    - RACKET_VERSION: 5.1.2
+    - RACKET_VERSION: 5.1.1
+    - RACKET_VERSION: 5.1
+    - RACKET_VERSION: 5.0.2
+    - RACKET_VERSION: 5.0.1
+    - RACKET_VERSION: 5.0
+
+
+# Download and install Racket.
+# For RACKET_MINIMAL, also install packages needed for `raco test`.
+install:
+  - git clone https://github.com/liberalartist/appveyor-racket.git C:\a-r
+  - bash C:\a-r\download-racket.sh C:\install-racket.exe
+  - C:\install-racket.exe /S /D=C:\racket
+  - set PATH=%PATH%;C:\racket\
+  - >
+    IF "%RACKET_MINIMAL%"=="1"
+    raco pkg install --auto -i rackunit-lib compiler-lib
+
+
+# Install your package.
+build_script:
+  - raco pkg install --auto --name %PKG_NAME%
+
+
+# Run your tests.
+test_script:
+  - raco test -x -p %PKG_NAME%
+  - raco setup --check-pkg-deps --pkgs %PKG_NAME%
+
+
