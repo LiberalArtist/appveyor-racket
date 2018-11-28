@@ -127,18 +127,15 @@ test_script:
 # Special case to support Racket 5.3 & 5.3.1,
 # which lack `raco pkg`:
 for:
--
-  matrix:
-    only:
-      - environment:
-        RACKET_VERSION: 5.3.1
-      - environment:
-        RACKET_VERSION: 5.3
-
-  build_script:
-  - raco make main.rkt
-
-  test_script:
-  - raco test -x .
+  - matrix:
+      only:
+        - environment:
+          RACKET_VERSION: 5.3.1
+        - environment:
+          RACKET_VERSION: 5.3
+    build_script:
+      - raco make main.rkt
+    test_script:
+      - raco test -x .
 
 
