@@ -39,15 +39,64 @@ environment:
     - RACKET_VERSION: 5.3.2
     - RACKET_VERSION: 5.3.1
     - RACKET_VERSION: 5.3
-    - RACKET_VERSION: 5.2.1
-    - RACKET_VERSION: 5.2
-    - RACKET_VERSION: 5.1.3
-    - RACKET_VERSION: 5.1.2
-    - RACKET_VERSION: 5.1.1
-    - RACKET_VERSION: 5.1
-    - RACKET_VERSION: 5.0.2
-    - RACKET_VERSION: 5.0.1
-    - RACKET_VERSION: 5.0
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: HEAD # the latest nightly snapshot
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: HEADCS # like HEAD, but Racket-on-Chez
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: RELEASE # release candidate (during the release process)
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 7.1
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 7.0
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.12
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.11
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.10
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.9
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.8
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.7
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.6
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.5
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.4
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.3
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.2
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.1.1
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.1
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.0.1
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 6.0
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.93
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.92
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3.6
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3.5
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3.4
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3.3
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3.2
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3.1
+    - RACKET_MINIMAL: 1
+      RACKET_VERSION: 5.3
 
 
 # Download and install Racket.
@@ -63,13 +112,33 @@ install:
 
 
 # Install your package.
+# (The --auto flag was added in Racket 5.92)
 build_script:
-  - raco pkg install --auto --name %PKG_NAME%
+  - raco pkg install --deps search-auto --name %PKG_NAME%
 
 
 # Run your tests.
+# (The --check-pkg-deps flag was added in Racket 6.1)
 test_script:
   - raco test -x -p %PKG_NAME%
-  - raco setup --check-pkg-deps --pkgs %PKG_NAME%
+  #- raco setup --check-pkg-deps --pkgs %PKG_NAME%
+
+
+# Special case to support Racket 5.3 & 5.3.1,
+# which lack `raco pkg`:
+for:
+-
+  matrix:
+    only:
+      - environment:
+        RACKET_VERSION: 5.3.1
+      - environment:
+        RACKET_VERSION: 5.3
+
+  build_script:
+  - raco make main.rkt
+
+  test_script:
+  - raco test -x .
 
 
