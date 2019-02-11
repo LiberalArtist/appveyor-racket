@@ -1,3 +1,7 @@
+platform:
+  - x86 
+  - x64
+
 environment:
   PKG_NAME: appveyor-racket # replace with your package name
   CYGPATH: cygpath -u # used by download-racket.sh
