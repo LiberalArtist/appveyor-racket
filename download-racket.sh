@@ -14,10 +14,6 @@
 #   is used to transform the destination path.
 # That allows testing this script on Unix-like systems.
 # On Windows, CYGPATH should generally be "cygpath -u".
-# If the PLATFORM environment variable is set to "x86",
-#   this script will try to install an i386 version of Racket.
-#   (AppVeyor does this automatically.)
-#   Otherwise, and by default, the x86_64 version will be used.
 
 set -e
 
@@ -31,12 +27,6 @@ if [[ "$RACKET_MINIMAL" = "1" ]]; then
     MIN="minimal-"
 else
     MIN=""
-fi
-
-if [[ "$PLATFORM" == "x86" ]]; then
-    ARCH="i386"
-else
-    ARCH="x86_64"
 fi
 
 
@@ -55,21 +45,21 @@ if [[ "$RACKET_VERSION" = "HEAD" ]] || [[ "$RACKET_VERSION" = "HEADCS" ]]; then
     else
 	CS=""
     fi
-    URL="${UTAH_BASE}/${MIN}racket-current-${ARCH}-win32${CS}.exe"
+    URL="${UTAH_BASE}/${MIN}racket-current-x86_64-win32${CS}.exe"
 elif [[ "$RACKET_VERSION" = "RELEASE" ]]; then
-    URL="${RELEASE_BASE}/racket-${MIN}current-${ARCH}-win32.exe"
+    URL="${RELEASE_BASE}/racket-${MIN}current-x86_64-win32.exe"
 elif [[ "$RACKET_VERSION" = 7.* ]] \
 	 || [[ "$RACKET_VERSION" = 6.* ]] \
 	 || [[ "$RACKET_VERSION" = 6.[0-4].[0-9] ]] \
 	 || [[ "$RACKET_VERSION" = 5.9* ]]; then
-    URL="${DL_BASE}/racket-${MIN}${RACKET_VERSION}-${ARCH}-win32.exe"
+    URL="${DL_BASE}/racket-${MIN}${RACKET_VERSION}-x86_64-win32.exe"
 elif [[ "$RACKET_VERSION" = 5.3* ]]; then
     if [[ "$RACKET_MINIMAL" = "1" ]]; then
 	RACKET="racket-textual"
     else
 	RACKET="racket"
     fi
-    URL="${DL_BASE}/${RACKET}/${RACKET}-${RACKET_VERSION}-bin-${ARCH}-win32.exe"
+    URL="${DL_BASE}/${RACKET}/${RACKET}-${RACKET_VERSION}-bin-x86_64-win32.exe"
 else
     echo "ERROR: Unsupported version ${RACKET_VERSION}"
     exit 1
